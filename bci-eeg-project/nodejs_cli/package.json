@@ -1,0 +1,12 @@
+{
+  "name": "bci-cli",
+  "version": "1.0.0",
+  "description": "BCI EEG Brain State Classifier CLI",
+  "type": "module",
+  "bin": { "bci": "./bin/bci.js" },
+  "dependencies": {
+    "onnxruntime-node": "^1.17.0",
+    "commander": "^11.0.0",
+    "chalk": "^5.3.0"
+  }
+}
