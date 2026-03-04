@@ -1,2 +1,26 @@
 # Google App Engine generated folder
 appengine-generated/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Trained model artefacts (generated at runtime)
+bci-eeg-project/model/saved_model/bci_model.h5
+bci-eeg-project/model/saved_model/scaler.pkl
+bci-eeg-project/model/saved_model/history.npy
+bci-eeg-project/model/saved_model/*.png
+
+# macOS metadata
+.DS_Store
