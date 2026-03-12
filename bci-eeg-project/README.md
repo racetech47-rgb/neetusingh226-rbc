@@ -47,9 +47,12 @@ bci-eeg-project/
 │       ├── bci_model.h5
 │       ├── scaler.pkl
 │       └── history.npy
-└── inference/
+├── inference/
+│   ├── __init__.py
+│   └── predict.py                 ← Real-time classification
+└── tools/
     ├── __init__.py
-    └── predict.py                 ← Real-time classification
+    └── eeg_analysis.py            ← EEG signal analysis tool
 ```
 
 ---
@@ -118,8 +121,27 @@ python main.py --mode evaluate
 # Run a real-time prediction demo
 python main.py --mode predict
 
+# Run EEG signal analysis (summary, CSV export, waveform plots)
+python main.py --mode analyze
+
 # Run all three steps in sequence
 python main.py --mode all
+```
+
+The `analyze` mode also has its own standalone CLI for finer control:
+
+```bash
+# Print band-power statistics for each class
+python tools/eeg_analysis.py --action summary
+
+# Export feature matrix to CSV
+python tools/eeg_analysis.py --action export --output features.csv
+
+# Plot sample EEG waveforms and power spectra
+python tools/eeg_analysis.py --action plot --samples 3
+
+# Run all three analysis actions
+python tools/eeg_analysis.py --action all
 ```
 
 ---
