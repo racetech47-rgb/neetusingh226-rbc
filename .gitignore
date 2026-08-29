@@ -22,5 +22,9 @@ bci-eeg-project/model/saved_model/scaler.pkl
 bci-eeg-project/model/saved_model/history.npy
 bci-eeg-project/model/saved_model/*.png
 
+# Analysis tool generated output (generated at runtime)
+bci-eeg-project/features.csv
+bci-eeg-project/plots/
+
 # macOS metadata
 .DS_Store

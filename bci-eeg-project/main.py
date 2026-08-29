@@ -8,6 +8,7 @@ Usage
   python main.py --mode train     # Generate data, preprocess, train model
   python main.py --mode evaluate  # Evaluate model performance
   python main.py --mode predict   # Run real-time prediction demo
+  python main.py --mode analyze   # Run EEG signal analysis tool
   python main.py --mode all       # Run all three steps in sequence
 """
 
@@ -36,6 +37,16 @@ def _run_predict() -> None:
     demo()
 
 
+def _run_analyze() -> None:
+    from tools.eeg_analysis import summary, export, plot
+    print("--- Band-Power Summary ---")
+    summary()
+    print("\n--- Exporting features to features.csv ---")
+    export()
+    print("\n--- Plotting 3 sample EEG epochs ---")
+    plot(n_plot_samples=3)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="bci-eeg",
@@ -46,12 +57,13 @@ def main() -> None:
             "  python main.py --mode train\n"
             "  python main.py --mode evaluate\n"
             "  python main.py --mode predict\n"
+            "  python main.py --mode analyze\n"
             "  python main.py --mode all\n"
         ),
     )
     parser.add_argument(
         "--mode",
-        choices=["train", "evaluate", "predict", "all"],
+        choices=["train", "evaluate", "predict", "analyze", "all"],
         required=True,
         help="Pipeline mode to run.",
     )
@@ -74,6 +86,12 @@ def main() -> None:
         print(" Mode: PREDICT")
         print("=" * 60)
         _run_predict()
+
+    elif args.mode == "analyze":
+        print("=" * 60)
+        print(" Mode: ANALYZE")
+        print("=" * 60)
+        _run_analyze()
 
     elif args.mode == "all":
         print("=" * 60)
