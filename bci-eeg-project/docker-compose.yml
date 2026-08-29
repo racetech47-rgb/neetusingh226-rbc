@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  bci-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=model/saved_model/bci_model.h5
+    volumes:
+      - ./model/saved_model:/app/model/saved_model
+
+  bci-webapp:
+    build: ../webapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bci-api

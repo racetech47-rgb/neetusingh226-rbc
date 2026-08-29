@@ -1,0 +1,91 @@
+# GitHub Actions — CI/CD Pipeline for BCI API
+#
+# Workflow: test → build → deploy
+#
+# Triggers on every push to `main`.
+#
+# Required secrets (Settings → Secrets → Actions):
+#   RAILWAY_TOKEN — Railway project token for deployment
+#
+# To set up Railway:
+#   1. Install Railway CLI: npm install -g @railway/cli
+#   2. Run: railway login && railway init  (in bci-eeg-project/)
+#   3. Copy the project token from Railway dashboard → Settings → Tokens
+#   4. Add it as RAILWAY_TOKEN in GitHub secrets
+#
+# To set up Render:
+#   1. Connect the repo in the Render dashboard (render.yaml is auto-detected)
+#   2. No additional GitHub secrets needed — Render uses its own OAuth
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+# Minimal permissions — read-only access to repo contents
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: bci-eeg-project
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Run the test suite
+  # ---------------------------------------------------------------------------
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+  # ---------------------------------------------------------------------------
+  # 2. Build the Docker image
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t bci-api .
+
+  # ---------------------------------------------------------------------------
+  # 3. Deploy to Railway
+  #    Requires the RAILWAY_TOKEN secret to be set in the repository.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to Railway
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --detach
